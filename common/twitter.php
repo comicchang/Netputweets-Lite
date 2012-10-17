@@ -963,12 +963,11 @@ function twitter_status_page($query) {
             if ($threadstatus && $threadstatus[0] && $threadstatus[0]->results) {
                 $array = array_reverse($threadstatus[0]->results);
                 $tl = array();
+                //$status = twitter_process($request);
+                $status->user = $status->from;
+                $tl[] = $status;
                 foreach ($array as $key=>$value) {
                     $tl[] = $value->value;
-                    if ($value->value->in_reply_to_status_id_str && $value->value->in_reply_to_status_id_str == $id) {
-                        $status->user = $status->from;
-                        $tl[] = $status;
-                    }
                 }
                 $tl = twitter_standard_timeline($tl, 'status');
                 $content .= '<p>Related results...</p>'.theme('timeline', $tl);
@@ -2111,6 +2110,7 @@ function twitter_standard_timeline($feed, $source) {
                 unset($new->user);
                 $output[(string) $new->id] = $new;
             }
+            krsort ($output);
             return $output;
 
         case 'search':
